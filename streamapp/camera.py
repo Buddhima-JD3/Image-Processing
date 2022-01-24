@@ -8,15 +8,7 @@ import imutils
 import cv2,os,urllib.request
 import numpy as np
 from django.conf import settings
-face_detection_videocam = cv2.CascadeClassifier(os.path.join(
-			settings.BASE_DIR,'opencv_haarcascade_data/haarcascade_frontalface_default.xml'))
-face_detection_webcam = cv2.CascadeClassifier(os.path.join(
-			settings.BASE_DIR,'opencv_haarcascade_data/haarcascade_frontalface_default.xml'))
-# load our serialized face detector model from disk
-prototxtPath = os.path.sep.join([settings.BASE_DIR, "face_detector/deploy.prototxt"])
-weightsPath = os.path.sep.join([settings.BASE_DIR,"face_detector/res10_300x300_ssd_iter_140000.caffemodel"])
-faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
-maskNet = load_model(os.path.join(settings.BASE_DIR,'face_detector/mask_detector.model'))
+
 
 
 # function for detecting left mouse click
@@ -25,6 +17,12 @@ class VideoCamera(object):
 
 	def __init__(self):
 		self.video = cv2.VideoCapture(0)
+		self.video.set(cv2.CAP_PROP_FRAME_WIDTH, 900)
+		self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+		width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
+		height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
+		print(width, height)
+
 
 	def __del__(self):
 		self.video.release()
@@ -44,6 +42,10 @@ class GreyVideoCamera(object):
 
 	def __init__(self):
 		self.video = cv2.VideoCapture(0)
+		self.video.set(cv2.CAP_PROP_FRAME_WIDTH, 900)
+		self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+		width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
+		height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 	def __del__(self):
 		self.video.release()
@@ -63,6 +65,10 @@ class BinaryVideoCamera(object):
 
 	def __init__(self):
 		self.video = cv2.VideoCapture(0)
+		self.video.set(cv2.CAP_PROP_FRAME_WIDTH, 900)
+		self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+		width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
+		height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 	def __del__(self):
 		self.video.release()
