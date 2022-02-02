@@ -115,8 +115,7 @@
     var context = canvas.getContext("2d");
     var counter = 0;
     var counter2 = 0;
-    var X1 = 0;
-    var Y1 = 0;
+    var X1,Y1,X2,Y2,result = 0;
 
     //section to get the coordinates of the circle
     function getMousePosition(canvas, event) {
@@ -125,7 +124,7 @@
         let x1 = Math.round(event.clientX - rect.left);
         let y1 = Math.round(event.clientY - rect.top);
 
-        console.log("Coordinate x1: " + x1, "Coordinate y1: " + y1);
+        console.log("x1: " + x1,"&&", "y1: " + y1);
         X1=x1;
         Y1=y1;
         }
@@ -135,8 +134,10 @@
         let y2 = Math.round(event.clientY - rect.top - Y1);
         x2=x2+X1;
         y2=y2+Y1;
-        console.log("Coordinate x2: " + x2, "Coordinate y2: " + y2);
-        let result = Math.round(getDistance(X1,Y1,x2,y2));
+        console.log("x2: " + x2,"&&","y2: " + y2);
+        X2=x2;
+        Y2=y2;
+        result = Math.round(getDistance(X1,Y1,x2,y2));
         addRow(X1,Y1,x2,y2,result)
 
 
@@ -144,6 +145,20 @@
         DrawDottedLine(X1,x2,Y1,y2,result);
 
         }else if(counter == 3){
+            $.ajax({
+                    method: "POST",
+                    url: "{% url 'edit_favorites' %}",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    contentType: "application/json",
+                    dataType: 'json',
+                    data: JSON.stringify({X1:X1,Y1:Y1,X2:X2,Y2:Y2,R:result}),
+                    success: function(data) {
+                        console.log('success!!!')
+                    },
+                    error: function(jqXhr, textStatus, errorMessage){
+                    console.log("Error: ", errorMessage);},
+                    })
+
             context.clearRect(0,0,848,480);
                //clears the previous circle
             X1=Y1=x1=x2=y1=y2=0;
@@ -179,7 +194,7 @@ function DrawDottedLine(a1,a2,b1,b2,result){
     ctx.lineTo(a2, b2);
     ctx.stroke();
     ctx.font = "30px Comic Sans MS";
-    console.log(result);
+    console.log("result = "+result);
 
     ctx.fillText(result,30,50);
 }
@@ -202,7 +217,7 @@ function DrawDottedLine(a1,a2,b1,b2,result){
     }else if(counter == 3){
         counter = 0;
     }
-    console.log(counter);
+    console.log("counter = "+counter);
 }
 
     function drawcircle(x,y) {
@@ -275,7 +290,7 @@ canvas.addEventListener("mousemove", function(e) {
     var canvasY = Math.round(e.clientY - cRect.top - Y1);    // positions to get make (0,0) the top left of the
     document.getElementById("x1").innerHTML = canvasX;
     document.getElementById("y1").innerHTML = canvasY;
-    console.log(X1,Y1,(parseInt(canvasX+X1)) ,(parseInt(canvasY+Y1)));
+<!--    console.log(X1,Y1,(parseInt(canvasX+X1)) ,(parseInt(canvasY+Y1)));-->
     let measure = Math.round(getDistance(X1,Y1,(parseInt(canvasX+X1)),(parseInt(canvasY+Y1))));
     document.getElementById("x2").innerHTML = measure;
 });
